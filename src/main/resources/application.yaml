@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: get_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/get
+        - id: post_route
+          uri: https://httpbin.org
+          predicates:
+            - Path=/post
+  cache:
+    type: hazelcast
+
+rate-limiter:
+  costs:
+    - path: /get
+      cost: 2
+    - path: /get
+      cost: 1
+    - path: /post
+      cost: 5
+  limiters:
+    - capacity: 10
+      period: 15m
+    - capacity: 100
+      period: 1h
