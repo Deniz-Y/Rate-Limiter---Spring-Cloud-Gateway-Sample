@@ -12,7 +12,8 @@ data class RateLimiterConfig(
 ) {
     data class RateLimiter(
         val capacity: Long,
-        val period: Duration
+        val period: Duration,
+        val name: String
     )
     data class Cost(
         val path: String,

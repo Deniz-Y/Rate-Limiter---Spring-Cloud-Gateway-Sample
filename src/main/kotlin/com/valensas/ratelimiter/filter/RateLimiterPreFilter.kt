@@ -1,5 +1,10 @@
 package com.valensas.ratelimiter.filter
 
+import com.hazelcast.core.Hazelcast
+import com.hazelcast.core.HazelcastInstance
+import com.hazelcast.map.IMap
+import io.github.bucket4j.BucketConfiguration
+import io.github.bucket4j.grid.hazelcast.HazelcastProxyManager
 import com.valensas.ratelimiter.config.RateLimiterConfig
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket
@@ -16,17 +21,27 @@ import kotlin.math.pow
 class RateLimiterPreFilter(
     private val rateLimiterConfig: RateLimiterConfig
 ) : GlobalFilter {
-    val buckets = rateLimiterConfig.limiters.map {
-        Bucket.builder().addLimit(Bandwidth.simple(it.capacity, it.period)).build()
-    }
+    val hzInstance: HazelcastInstance = Hazelcast.newHazelcastInstance()
+    val map: IMap<String, ByteArray> = hzInstance.getMap("bucket-map")
+    private val proxyManager: HazelcastProxyManager<String> = HazelcastProxyManager(map)
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         logger.info("Applying rate limiter filter")
 
+        val xBuckets = rateLimiterConfig.limiters.map {
+            val configuration = BucketConfiguration.builder()
+                .addLimit(Bandwidth.simple(it.capacity, it.period))
+                .build()
+            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress.toString() +  it.name, configuration)
+
+            hazelcastBucket
+
+        }
+
         val cost = rateLimiterConfig.costs.filter { it.path == exchange.request.path.value() }.sumOf { it.cost }
-        val results = buckets.map { it.tryConsumeAndReturnRemaining(cost) }
+        val results = xBuckets.map { it.tryConsumeAndReturnRemaining(cost) }
         logger.info("Results: {}", results)
 
         return if (results.all { it.isConsumed }) {

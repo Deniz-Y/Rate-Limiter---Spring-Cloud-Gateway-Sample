@@ -24,5 +24,7 @@ rate-limiter:
   limiters:
     - capacity: 10
       period: 15m
+      name: limiter1
     - capacity: 100
       period: 1h
+      name: limiter2
