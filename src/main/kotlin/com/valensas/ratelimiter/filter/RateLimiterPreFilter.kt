@@ -1,4 +1,7 @@
 package com.valensas.ratelimiter.filter
+import com.valensas.ratelimiter.filter.MetricService
+import com.valensas.ratelimiter.filter.RateLimiterAction
+import com.valensas.ratelimiter.filter.metricClass
 
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
@@ -19,7 +22,9 @@ import kotlin.math.pow
 
 @Component
 class RateLimiterPreFilter(
-    private val rateLimiterConfig: RateLimiterConfig
+    private val rateLimiterConfig: RateLimiterConfig,
+    private val metricService: MetricService
+
 ) : GlobalFilter {
     val hzInstance: HazelcastInstance = Hazelcast.newHazelcastInstance()
     val map: IMap<String, ByteArray> = hzInstance.getMap("bucket-map")
@@ -46,12 +51,17 @@ class RateLimiterPreFilter(
 
         return if (results.all { it.isConsumed }) {
             exchange.response.headers.add("Remaining", results.minOf { it.remainingTokens }.toString())
+            metricService.incrementRequestAction("","",RateLimiterAction.Block)
+            metricClass.processRequest()
             chain.filter(exchange)
         } else {
             val waitTimeInSecond = results.maxOf { it.nanosToWaitForRefill } / 10.0.pow(9.0)
             exchange.response.headers.add("Retry-After", waitTimeInSecond.toString())
             exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
             exchange.response.writeWith(Mono.empty())
+
         }
     }
+
+
 }
