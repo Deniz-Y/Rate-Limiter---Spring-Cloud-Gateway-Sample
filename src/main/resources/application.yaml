@@ -28,3 +28,9 @@ rate-limiter:
     - capacity: 100
       period: 1h
       name: limiter2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

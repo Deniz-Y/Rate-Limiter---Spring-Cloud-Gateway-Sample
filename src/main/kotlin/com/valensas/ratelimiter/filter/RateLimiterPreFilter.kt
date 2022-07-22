@@ -8,6 +8,7 @@ import io.github.bucket4j.grid.hazelcast.HazelcastProxyManager
 import com.valensas.ratelimiter.config.RateLimiterConfig
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket
+import io.micrometer.core.annotation.Timed
 import org.slf4j.LoggerFactory
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
@@ -27,6 +28,8 @@ class RateLimiterPreFilter(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+
+    @Timed(value = "filter.time", description = "Time taken to return filter")
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         logger.info("Applying rate limiter filter")
 

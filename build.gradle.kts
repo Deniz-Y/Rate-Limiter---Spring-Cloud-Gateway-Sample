@@ -29,7 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
 	implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-	runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 
@@ -37,6 +37,9 @@ dependencies {
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-hazelcast:7.5.0")
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:7.5.0")
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-jcache:7.5.0")
+
+	// Timer
+	implementation("org.springframework.boot:spring-boot-starter-aop")
 
 	// M1 Support
 	runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64")

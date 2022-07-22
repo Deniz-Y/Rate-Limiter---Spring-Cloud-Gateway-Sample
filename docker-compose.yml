@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  rate-limiter:
+    platform: linux/x86_64
+    build:
+      context: .
+      args:
+        JAR_FILE: build/libs/com.valensas-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8080:8080"
+    environment:
+      SPRINGDOC_SWAGGER-UI_PATH: /
