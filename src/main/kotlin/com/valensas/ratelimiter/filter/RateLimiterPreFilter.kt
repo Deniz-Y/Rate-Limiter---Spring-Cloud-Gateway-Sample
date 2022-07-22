@@ -1,7 +1,4 @@
 package com.valensas.ratelimiter.filter
-import com.valensas.ratelimiter.filter.MetricService
-import com.valensas.ratelimiter.filter.RateLimiterAction
-import com.valensas.ratelimiter.filter.metricClass
 
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
@@ -40,7 +37,6 @@ class RateLimiterPreFilter(
                 .addLimit(Bandwidth.simple(it.capacity, it.period))
                 .build()
             val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress.toString() +  it.name, configuration)
-
             hazelcastBucket
 
         }
