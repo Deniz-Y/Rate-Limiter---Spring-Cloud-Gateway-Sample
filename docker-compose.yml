@@ -6,7 +6,7 @@ services:
     build:
       context: .
       args:
-        JAR_FILE: build/libs/com.valensas-0.0.1-SNAPSHOT.jar
+        JAR_FILE: build/libs/rate-limiter-0.0.1-SNAPSHOT.jar
     ports:
       - "8080:8080"
     environment:
