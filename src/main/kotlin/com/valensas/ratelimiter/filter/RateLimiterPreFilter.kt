@@ -32,7 +32,7 @@ class RateLimiterPreFilter(
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         logger.info("Applying rate limiter filter")
 
-        val xBuckets = rateLimiterConfig.limiters.map {
+        val BucketList = rateLimiterConfig.limiters.map {
             val configuration = BucketConfiguration.builder()
                 .addLimit(Bandwidth.simple(it.capacity, it.period))
                 .build()
@@ -42,7 +42,7 @@ class RateLimiterPreFilter(
         }
 
         val cost = rateLimiterConfig.costs.filter { it.path == exchange.request.path.value() }.sumOf { it.cost }
-        val results = xBuckets.map { it.tryConsumeAndReturnRemaining(cost) }
+        val results = BucketList.map { it.tryConsumeAndReturnRemaining(cost) }
         logger.info("Results: {}", results)
 
         return if (results.all { it.isConsumed }) {
