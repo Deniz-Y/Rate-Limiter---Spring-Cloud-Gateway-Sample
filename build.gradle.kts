@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+	id ("com.google.cloud.tools.jib") version "3.2.1"
 	id("org.springframework.boot") version "2.7.1"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("org.jmailen.kotlinter") version "3.9.0"
@@ -32,6 +33,9 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
+
+	// Kubernetes
+	implementation("io.kubernetes:client-java-extended:15.0.1")
 
 	implementation("com.hazelcast:hazelcast-all:4.2.5")
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-hazelcast:7.5.0")
