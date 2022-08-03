@@ -94,4 +94,20 @@ class RateLimiterApplicationTests {
         logger.info("Response status of the request from {} is {}", ip, response.statusCode)
         assertEquals(expectedStatus, response.statusCode)
     }
+
+    @Test
+    fun `endpoint test`() {
+
+        //get endpoint uses 3 credits
+        val responseForGetEndpoint = restTemplate.exchange("/get", HttpMethod.GET, null, String::class.java)
+        assertEquals(HttpStatus.OK, responseForGetEndpoint.statusCode)
+
+        //post endpoint uses 5 credits
+        val responseForPostEndpoint = restTemplate.exchange("/post", HttpMethod.POST, null, String::class.java)
+        assertEquals(HttpStatus.OK, responseForPostEndpoint.statusCode)
+
+        val responseForGetEndpoint2 = restTemplate.exchange("/get", HttpMethod.GET, null, String::class.java)
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS, responseForGetEndpoint2.statusCode)
+
+    }
 }
