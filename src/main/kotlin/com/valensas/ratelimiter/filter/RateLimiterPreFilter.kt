@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import java.util.regex.Pattern
 import kotlin.math.pow
 
 @Component
@@ -36,7 +37,10 @@ class RateLimiterPreFilter(
             val configuration = BucketConfiguration.builder()
                 .addLimit(Bandwidth.simple(it.capacity, it.period))
                 .build()
-            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress.toString() +  it.name, configuration)
+
+            //logger.info("remote address: {}", exchange.request.remoteAddress?.address.toString())
+
+            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress?.address.toString() +  it.name, configuration)
             hazelcastBucket
 
         }

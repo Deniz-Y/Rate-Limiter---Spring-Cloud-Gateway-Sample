@@ -23,9 +23,9 @@ rate-limiter:
       cost: 5
   limiters:
     - capacity: 10
-      period: 15m
+      period: 1m
       name: limiter1
-    - capacity: 100
+    - capacity: 300
       period: 1h
       name: limiter2
 management:
