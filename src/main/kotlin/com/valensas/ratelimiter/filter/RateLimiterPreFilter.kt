@@ -32,15 +32,16 @@ class RateLimiterPreFilter(
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         logger.info("Applying rate limiter filter")
+        // logger.info("remote address: {}", exchange.request.remoteAddress?.address.toString())
+        // logger.info("headers: {}", exchange.request.headers.toString())
+        logger.info("key: {}", exchange.request.headers["x-fowarded-for"].toString())
 
         val BucketList = rateLimiterConfig.limiters.map {
             val configuration = BucketConfiguration.builder()
                 .addLimit(Bandwidth.simple(it.capacity, it.period))
                 .build()
 
-            //logger.info("remote address: {}", exchange.request.remoteAddress?.address.toString())
-
-            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress?.address.toString() +  it.name, configuration)
+            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.headers["x-fowarded-for"].toString() +  it.name, configuration)
             hazelcastBucket
 
         }
