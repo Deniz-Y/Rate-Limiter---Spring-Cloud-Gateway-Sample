@@ -38,10 +38,17 @@ class RateLimiterPreFilter(
                 .addLimit(Bandwidth.simple(it.capacity, it.period))
                 .build()
 
-            //logger.info("remote address: {}", exchange.request.remoteAddress?.address.toString())
+           logger.info("remote address: {}", exchange.request.remoteAddress?.address.toString())
+            if(exchange.request.headers.containsKey("X-Forwarded-For")){
+                val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.headers.getValue("X-Forwarded-For").toString()+  it.name, configuration)
+                hazelcastBucket
 
-            val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress?.address.toString() +  it.name, configuration)
-            hazelcastBucket
+            }else{
+
+                val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.remoteAddress?.address.toString() +  it.name, configuration)
+                hazelcastBucket
+            }
+
 
         }
 
