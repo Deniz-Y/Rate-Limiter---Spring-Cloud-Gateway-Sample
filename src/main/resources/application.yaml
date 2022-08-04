@@ -28,6 +28,7 @@ rate-limiter:
     - capacity: 300
       period: 1h
       name: limiter2
+
 management:
   endpoints:
     web:

@@ -8,6 +8,7 @@ import io.github.bucket4j.grid.hazelcast.HazelcastProxyManager
 import com.valensas.ratelimiter.config.RateLimiterConfig
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket
+import io.github.bucket4j.Refill
 import org.slf4j.LoggerFactory
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
@@ -38,7 +39,7 @@ class RateLimiterPreFilter(
 
         val BucketList = rateLimiterConfig.limiters.map {
             val configuration = BucketConfiguration.builder()
-                .addLimit(Bandwidth.simple(it.capacity, it.period))
+                .addLimit(Bandwidth.classic(it.capacity, Refill.intervally(it.capacity, it.period)))
                 .build()
 
             val hazelcastBucket: Bucket = proxyManager.builder().build(exchange.request.headers["x-fowarded-for"].toString() +  it.name, configuration)
@@ -47,6 +48,7 @@ class RateLimiterPreFilter(
         }
 
         val cost = rateLimiterConfig.costs.filter { it.path == exchange.request.path.value() }.sumOf { it.cost }
+        logger.info("cost= {}", cost)
         val results = BucketList.map { it.tryConsumeAndReturnRemaining(cost) }
         logger.info("Results: {}", results)
 
