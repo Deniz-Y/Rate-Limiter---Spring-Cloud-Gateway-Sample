@@ -43,7 +43,7 @@ dependencies {
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-jcache:7.5.0")
 
 	// M1 Support
-	runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64")
+	// runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64")
 }
 
 dependencyManagement {
