@@ -33,3 +33,6 @@ management:
     web:
       exposure:
         include: "*"
+
+rate-limit:
+  enabled: "False"

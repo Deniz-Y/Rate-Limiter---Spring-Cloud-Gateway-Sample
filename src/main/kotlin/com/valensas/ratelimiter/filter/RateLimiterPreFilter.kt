@@ -10,6 +10,7 @@ import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket
 import io.github.bucket4j.Refill
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
 import org.springframework.http.HttpStatus
@@ -20,6 +21,7 @@ import java.util.regex.Pattern
 import kotlin.math.pow
 
 @Component
+@ConditionalOnProperty(prefix = "rate-limit", name = ["enabled"], havingValue = "True")
 class RateLimiterPreFilter(
     private val rateLimiterConfig: RateLimiterConfig,
     private val metricService: MetricService
