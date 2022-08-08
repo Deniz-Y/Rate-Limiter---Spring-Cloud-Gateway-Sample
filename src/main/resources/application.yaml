@@ -3,11 +3,11 @@ spring:
     gateway:
       routes:
         - id: get_route
-          uri: https://httpbin.org
+          uri: http://localhost:9999/get
           predicates:
             - Path=/get
         - id: post_route
-          uri: https://httpbin.org
+          uri: http://localhost:9999/post
           predicates:
             - Path=/post
   cache:
@@ -35,4 +35,4 @@ management:
         include: "*"
 
 rate-limit:
-  enabled: "False"
+  enabled: "True"
