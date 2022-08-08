@@ -62,10 +62,10 @@ class RateLimiterPreFilter(
         return if (results.all { it.isConsumed }) {
             exchange.response.headers.add("Remaining", results.minOf { it.remainingTokens }.toString())
             metricService.incrementRequestAction("","",RateLimiterAction.Block)
-            metricClass.processRequest()
             chain.filter(exchange)
         } else {
             val waitTimeInSecond = results.maxOf { it.nanosToWaitForRefill } / 10.0.pow(9.0)
+            metricClass.processRequest()
             exchange.response.headers.add("Retry-After", waitTimeInSecond.toString())
             exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
             exchange.response.writeWith(Mono.empty())
