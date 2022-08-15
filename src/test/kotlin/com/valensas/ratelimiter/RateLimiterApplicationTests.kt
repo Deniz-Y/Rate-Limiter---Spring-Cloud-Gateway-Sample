@@ -97,6 +97,9 @@ class RateLimiterApplicationTests {
 
     @Test
     fun `endpoint test`() {
+        val longTime = 60000.toLong()
+        logger.info("Sleep {} seconds for reset the bucket", 60)
+        sleep(longTime)
 
         //get endpoint uses 3 credits
         val responseForGetEndpoint = restTemplate.exchange("/get", HttpMethod.GET, null, String::class.java)
