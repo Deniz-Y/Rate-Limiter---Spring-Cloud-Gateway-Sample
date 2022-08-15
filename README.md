@@ -117,10 +117,10 @@ This is for the test whether the rate limiter is based-on the ip of the client.
 
 ## Deploy to Kubernetes:
 
-   docker login registry.rancher.valensas.com
+   `docker login registry.rancher.valensas.com`
    -- enter username and password --
 
-   gradle jib --image=registry.rancher.valensas.com/interns/rate-limit:latest
+   `gradle jib --image=registry.rancher.valensas.com/interns/rate-limit:latest`
 
    copy the following yml: 
 
@@ -192,6 +192,6 @@ spec:
               number: 8080
 
 ```
-   pbpaste| kubectl apply -f -
+   `pbpaste| kubectl apply -f -`
 
 
