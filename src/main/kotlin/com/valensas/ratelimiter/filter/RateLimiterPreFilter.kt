@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
-import java.util.regex.Pattern
 import kotlin.math.pow
 
 @Component
@@ -65,7 +64,7 @@ class RateLimiterPreFilter(
             chain.filter(exchange)
         } else {
             val waitTimeInSecond = results.maxOf { it.nanosToWaitForRefill } / 10.0.pow(9.0)
-            metricClass.processRequest()
+            MetricClass.processRequest()
             exchange.response.headers.add("Retry-After", waitTimeInSecond.toString())
             exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
             exchange.response.writeWith(Mono.empty())
